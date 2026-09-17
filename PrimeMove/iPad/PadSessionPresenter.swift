@@ -4,7 +4,7 @@ import SwiftUI
 /// (routine or mini warm-up) or an interval preset.
 struct PadSessionItem: Identifiable {
     enum Kind {
-        case routine(SessionEngine)
+        case routine(SessionEngine, SessionRecord.Source)
         case interval(IntervalEngine)
     }
     let id = UUID()
@@ -17,16 +17,18 @@ struct PadSessionItem: Identifiable {
 final class PadSessionPresenter {
     var active: PadSessionItem?
 
-    func start(_ routine: Routine) {
+    func start(_ routine: Routine, source: SessionRecord.Source = .routine) {
         Cue.tap()
         active = PadSessionItem(kind: .routine(
-            SessionEngine(steps: routine.steps, accent: routine.accent, title: routine.title)))
+            SessionEngine(steps: routine.steps, accent: routine.accent, title: routine.title),
+            source))
     }
 
     func start(_ mini: MiniWarmup) {
         Cue.tap()
         active = PadSessionItem(kind: .routine(
-            SessionEngine(steps: mini.steps, accent: mini.accent, title: mini.title)))
+            SessionEngine(steps: mini.steps, accent: mini.accent, title: mini.title),
+            .mini))
     }
 
     func start(_ preset: IntervalPreset) {

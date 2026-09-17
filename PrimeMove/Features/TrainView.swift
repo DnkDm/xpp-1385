@@ -2,6 +2,7 @@ import SwiftUI
 
 struct TrainView: View {
     @State private var durationFilter: DurationFilter = .all
+    @State private var showBuilder = false
 
     enum DurationFilter: String, CaseIterable, Identifiable {
         case all, short, medium, long
@@ -36,6 +37,9 @@ struct TrainView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 26) {
                         header
+                        NavigationLink { TrainingLogView() } label: { StreakStrip() }
+                            .buttonStyle(.plain)
+                        BuilderCard { Cue.step(); showBuilder = true }
                         FeaturedRoutineCard(routine: featured)
                         categoriesSection
                         routinesSection
@@ -48,6 +52,7 @@ struct TrainView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(.hidden, for: .navigationBar)
+            .fullScreenCover(isPresented: $showBuilder) { BuilderView() }
         }
     }
 
@@ -295,5 +300,44 @@ struct CategoryRoutinesView: View {
         .navigationTitle(category.short)
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(.hidden, for: .navigationBar)
+    }
+}
+
+
+// MARK: - Prime Builder entry card
+
+/// Entry point to the check-in that assembles a routine for this session.
+struct BuilderCard: View {
+    var action: () -> Void
+
+    private let shape = CutCorner(cut: 16, corners: [.topRight, .bottomLeft])
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 14) {
+                Image(systemName: "wand.and.stars")
+                    .font(.system(size: 22, weight: .black))
+                    .foregroundStyle(Theme.canvas)
+                    .frame(width: 54, height: 54)
+                    .background(CutCorner(cut: 10, corners: [.topRight, .bottomLeft])
+                        .fill(Theme.voltGradient))
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Prime Builder").eyebrow(Theme.volt)
+                    Text("Build today's warm-up")
+                        .font(.heavy(20)).foregroundStyle(Theme.textPrimary)
+                        .textCase(.uppercase)
+                    Text("Four questions. A routine made for how your body feels right now.")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(Theme.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 0)
+            }
+            .padding(14)
+            .background(shape.fill(Theme.surface))
+            .overlay(shape.stroke(Theme.volt.opacity(0.45), lineWidth: 1.5))
+            .contentShape(shape)
+        }
+        .buttonStyle(.plain)
     }
 }

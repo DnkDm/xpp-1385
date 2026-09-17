@@ -18,7 +18,7 @@ There is no `Package.swift` or workspace — build through the `.xcodeproj` with
 ```bash
 # Build for the simulator
 xcodebuild -project PrimeMove.xcodeproj -scheme PrimeMove \
-  -destination 'platform=iOS Simulator,name=iPhone 16' build
+  -destination 'platform=iOS Simulator,name=iPhone 18 Pro' build
 
 # List available simulator destinations if the name above is unavailable
 xcodebuild -showdestinations -project PrimeMove.xcodeproj -scheme PrimeMove
@@ -35,10 +35,10 @@ No test target exists yet. Once one is added, run:
 
 ```bash
 xcodebuild test -project PrimeMove.xcodeproj -scheme PrimeMove \
-  -destination 'platform=iOS Simulator,name=iPhone 16'
+  -destination 'platform=iOS Simulator,name=iPhone 18 Pro'
 
 # Run a single test
 xcodebuild test -project PrimeMove.xcodeproj -scheme PrimeMove \
-  -destination 'platform=iOS Simulator,name=iPhone 16' \
+  -destination 'platform=iOS Simulator,name=iPhone 18 Pro' \
   -only-testing:PrimeMoveTests/SomeTestClass/testSomething
 ```

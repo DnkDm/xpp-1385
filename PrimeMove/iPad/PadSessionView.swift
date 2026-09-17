@@ -8,7 +8,17 @@ import UIKit
 /// and Esc work from a hardware keyboard.
 struct PadSessionView: View {
     @State var engine: SessionEngine
+    /// What kind of session this is, so the training log can categorise it.
+    var source: SessionRecord.Source = .routine
     @Environment(\.dismiss) private var dismiss
+    @State private var logged = false
+
+    @State private var coach = MotionCoach()
+    @State private var showMotionIntro = false
+    @AppStorage("motionCheckEnabled") private var motionCheckEnabled = true
+    @AppStorage("motionCheckExplained") private var motionCheckExplained = false
+
+    private var motionCheckActive: Bool { motionCheckEnabled && coach.isAvailable }
 
     var body: some View {
         GeometryReader { geo in
@@ -26,7 +36,9 @@ struct PadSessionView: View {
                 .ignoresSafeArea()
 
                 if engine.isComplete {
-                    CompletionView(engine: engine, onDone: { dismiss() })
+                    CompletionView(engine: engine,
+                                   executionScore: coach.sessionScore,
+                                   onDone: { dismiss() })
                         .frame(maxWidth: 560)
                         .transition(.opacity)
                 } else if landscape {
@@ -44,13 +56,47 @@ struct PadSessionView: View {
             }
         }
         .statusBarHidden(true)
+        .onChange(of: engine.index) { previous, _ in
+            if previous < engine.steps.count {
+                coach.endStep(seconds: engine.steps[previous].seconds)
+            }
+            coach.beginStep(kind: engine.exercise.kind)
+        }
+        .onChange(of: engine.isComplete) { _, complete in
+            // Write the finished session to the local log exactly once.
+            guard complete, !logged else { return }
+            logged = true
+            coach.endStep(seconds: engine.current.seconds)
+            coach.finish()
+            TrainingLog.shared.record(engine: engine, source: source,
+                                      executionScore: coach.sessionScore)
+        }
         .onAppear {
             UIApplication.shared.isIdleTimerDisabled = true
             engine.start()
+            if motionCheckActive {
+                coach.beginStep(kind: engine.exercise.kind)
+                coach.start()
+                if !motionCheckExplained { showMotionIntro = true }
+            }
         }
         .onDisappear {
             UIApplication.shared.isIdleTimerDisabled = false
             engine.pause()
+            coach.stop()
+        }
+        .sheet(isPresented: $showMotionIntro) {
+            MotionCheckIntro(
+                onKeep: {
+                    motionCheckExplained = true
+                    showMotionIntro = false
+                },
+                onTurnOff: {
+                    motionCheckExplained = true
+                    motionCheckEnabled = false
+                    coach.stop()
+                    showMotionIntro = false
+                })
         }
     }
 

@@ -5,6 +5,7 @@ import SwiftUI
 struct PadTrainView: View {
     @Environment(\.horizontalSizeClass) private var hSize
     @State private var filter: TrainView.DurationFilter = .all
+    @State private var showBuilder = false
 
     private var filtered: [Routine] { Library.routines.filter { filter.matches($0) } }
     private var featured: Routine { Library.routines[1] }   // Universal 5, same pick as iPhone
@@ -15,6 +16,7 @@ struct PadTrainView: View {
             PadPage(asset: "bg_home") {
                 VStack(alignment: .leading, spacing: 40) {
                     heroBand(w)
+                    primeTools(w)
                     categories(w)
                     routines(w)
                     FooterNote()
@@ -62,6 +64,29 @@ struct PadTrainView: View {
         } trailing: {
             PadFeaturedCard(routine: featured, height: wide ? 360 : 300)
         }
+    }
+
+    // MARK: Prime Builder + training log
+
+    private func primeTools(_ w: CGFloat) -> some View {
+        let wide = w >= PadMetrics.twoPaneBreakpoint
+        return Group {
+            if wide {
+                HStack(alignment: .top, spacing: 20) {
+                    BuilderCard { Cue.step(); showBuilder = true }
+                    NavigationLink { TrainingLogView() } label: { StreakStrip() }
+                        .buttonStyle(.plain)
+                        .frame(maxWidth: 380)
+                }
+            } else {
+                VStack(spacing: 14) {
+                    BuilderCard { Cue.step(); showBuilder = true }
+                    NavigationLink { TrainingLogView() } label: { StreakStrip() }
+                        .buttonStyle(.plain)
+                }
+            }
+        }
+        .fullScreenCover(isPresented: $showBuilder) { BuilderView() }
     }
 
     // MARK: Categories — one row when all five fit, otherwise a horizontal rail

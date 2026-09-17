@@ -75,8 +75,8 @@ struct PadRootView: View {
         .environment(presenter)
         .fullScreenCover(item: $presenter.active) { item in
             switch item.kind {
-            case .routine(let engine):
-                PadSessionView(engine: engine)
+            case .routine(let engine, let source):
+                PadSessionView(engine: engine, source: source)
             case .interval(let engine):
                 PadIntervalRunnerView(engine: engine)
             }

@@ -24,7 +24,8 @@ struct MiniView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(.hidden, for: .navigationBar)
             .fullScreenCover(item: $active) { mini in
-                SessionView(engine: SessionEngine(steps: mini.steps, accent: mini.accent, title: mini.title))
+                SessionView(engine: SessionEngine(steps: mini.steps, accent: mini.accent, title: mini.title),
+                            source: .mini)
             }
         }
     }

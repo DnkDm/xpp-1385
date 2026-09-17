@@ -3,7 +3,21 @@ import UIKit
 
 struct SessionView: View {
     @State var engine: SessionEngine
+    /// What kind of session this is, so the training log can categorise it.
+    var source: SessionRecord.Source = .routine
     @Environment(\.dismiss) private var dismiss
+    @State private var logged = false
+
+    @State private var coach = MotionCoach()
+    @State private var showMotionIntro = false
+    /// User preference, remembered between sessions.
+    @AppStorage("motionCheckEnabled") private var motionCheckEnabled = true
+    /// Whether the explainer has already been shown once.
+    @AppStorage("motionCheckExplained") private var motionCheckExplained = false
+
+    /// The strip only appears on hardware that has the sensors and when the
+    /// user has not switched the feature off.
+    private var motionCheckActive: Bool { motionCheckEnabled && coach.isAvailable }
 
     var body: some View {
         ZStack {
@@ -18,7 +32,9 @@ struct SessionView: View {
             .ignoresSafeArea()
 
             if engine.isComplete {
-                CompletionView(engine: engine, onDone: { dismiss() })
+                CompletionView(engine: engine,
+                               executionScore: coach.sessionScore,
+                               onDone: { dismiss() })
                     .transition(.opacity)
             } else {
                 activeSession
@@ -26,13 +42,50 @@ struct SessionView: View {
             }
         }
         .animation(.easeInOut(duration: 0.35), value: engine.isComplete)
+        .onChange(of: engine.index) { previous, _ in
+            // Close out the movement that just finished, then start judging
+            // the new one against its own expectation.
+            if previous < engine.steps.count {
+                coach.endStep(seconds: engine.steps[previous].seconds)
+            }
+            coach.beginStep(kind: engine.exercise.kind)
+        }
+        .onChange(of: engine.isComplete) { _, complete in
+            // Write the finished session to the local log exactly once.
+            guard complete, !logged else { return }
+            logged = true
+            coach.endStep(seconds: engine.current.seconds)
+            coach.finish()
+            TrainingLog.shared.record(engine: engine, source: source,
+                                      executionScore: coach.sessionScore)
+        }
         .onAppear {
             UIApplication.shared.isIdleTimerDisabled = true
             engine.start()
+            if motionCheckActive {
+                coach.beginStep(kind: engine.exercise.kind)
+                coach.start()
+                // Explain the feature the first time it ever runs.
+                if !motionCheckExplained { showMotionIntro = true }
+            }
         }
         .onDisappear {
             UIApplication.shared.isIdleTimerDisabled = false
             engine.pause()
+            coach.stop()
+        }
+        .sheet(isPresented: $showMotionIntro) {
+            MotionCheckIntro(
+                onKeep: {
+                    motionCheckExplained = true
+                    showMotionIntro = false
+                },
+                onTurnOff: {
+                    motionCheckExplained = true
+                    motionCheckEnabled = false
+                    coach.stop()
+                    showMotionIntro = false
+                })
         }
         .statusBarHidden(true)
     }
@@ -45,6 +98,9 @@ struct SessionView: View {
             ScrollView {
                 VStack(spacing: 20) {
                     exerciseImage
+                    if motionCheckActive {
+                        MotionStrip(coach: coach) { showMotionIntro = true }
+                    }
                     timerBlock
                     cueBlock
                     upNext
@@ -200,6 +256,8 @@ struct AngularRing: View {
 
 struct CompletionView: View {
     let engine: SessionEngine
+    /// Motion-check result, when the sensors were available for this session.
+    var executionScore: Double? = nil
     var onDone: () -> Void
 
     var body: some View {
@@ -219,6 +277,9 @@ struct CompletionView: View {
                 StatPill(icon: "clock.fill", value: mmss(engine.totalSeconds), label: "Time", accent: engine.accent)
                 StatPill(icon: "figure.run", value: "\(engine.steps.count)", label: "Moves", accent: engine.accent)
                 StatPill(icon: "checkmark", value: "100%", label: "Done", accent: engine.accent)
+            }
+            if let executionScore {
+                ExecutionSummary(score: executionScore)
             }
             Spacer()
             VStack(spacing: 12) {
