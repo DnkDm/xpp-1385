@@ -36,6 +36,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AECCEC7C1742461DC80576F3 /* AppsFlyerLib-Static in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,6 +64,9 @@
 /* Begin PBXNativeTarget section */
 		20E2E8882FF43B3300A327AC /* PrimeMove */ = {
 			isa = PBXNativeTarget;
+			packageProductDependencies = (
+				FC6B26331C018E7261DD4C41 /* AppsFlyerLib-Static */,
+			);
 			buildConfigurationList = 20E2E8942FF43B3400A327AC /* Build configuration list for PBXNativeTarget "PrimeMove" */;
 			buildPhases = (
 				20E2E8852FF43B3300A327AC /* Sources */,
@@ -86,6 +90,9 @@
 /* Begin PBXProject section */
 		20E2E8812FF43B3300A327AC /* Project object */ = {
 			isa = PBXProject;
+			packageReferences = (
+				150B1F4F799543D7A59ED8B5 /* XCRemoteSwiftPackageReference "AppsFlyerFramework-Static" */,
+			);
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2650;
@@ -353,6 +360,29 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+/* Begin PBXBuildFile section */
+		AECCEC7C1742461DC80576F3 /* AppsFlyerLib-Static in Frameworks */ = {isa = PBXBuildFile; productRef = FC6B26331C018E7261DD4C41 /* AppsFlyerLib-Static */; };
+/* End PBXBuildFile section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		150B1F4F799543D7A59ED8B5 /* XCRemoteSwiftPackageReference "AppsFlyerFramework-Static" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AppsFlyerSDK/AppsFlyerFramework-Static";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		FC6B26331C018E7261DD4C41 /* AppsFlyerLib-Static */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 150B1F4F799543D7A59ED8B5 /* XCRemoteSwiftPackageReference "AppsFlyerFramework-Static" */;
+			productName = "AppsFlyerLib-Static";
+		};
+/* End XCSwiftPackageProductDependency section */
+
 	};
 	rootObject = 20E2E8812FF43B3300A327AC /* Project object */;
 }

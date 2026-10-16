@@ -10,20 +10,22 @@ struct PrimeMoveApp: App {
 
     var body: some Scene {
         WindowGroup {
-            AppReviewContainer {
-                Group {
-                    if UIDevice.current.userInterfaceIdiom == .pad {
-                        PadRootView()      // iPad: sidebar-driven layout, see `iPad/`
-                    } else {
-                        RootView()         // iPhone: tab-bar experience
+            AppLaunchContainer {
+                AppReviewContainer {
+                    Group {
+                        if UIDevice.current.userInterfaceIdiom == .pad {
+                            PadRootView()      // iPad: sidebar-driven layout, see `iPad/`
+                        } else {
+                            RootView()         // iPhone: tab-bar experience
+                        }
                     }
-                }
-                .preferredColorScheme(.dark)
-                .tint(Theme.volt)
-                .fullScreenCover(isPresented: Binding(
-                    get: { !hasSeenOnboarding },
-                    set: { showing in if !showing { hasSeenOnboarding = true } })) {
-                    OnboardingView { hasSeenOnboarding = true }
+                    .preferredColorScheme(.dark)
+                    .tint(Theme.volt)
+                    .fullScreenCover(isPresented: Binding(
+                        get: { !hasSeenOnboarding },
+                        set: { showing in if !showing { hasSeenOnboarding = true } })) {
+                        OnboardingView { hasSeenOnboarding = true }
+                    }
                 }
             }
         }

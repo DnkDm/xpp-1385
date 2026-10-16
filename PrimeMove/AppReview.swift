@@ -403,6 +403,9 @@ final class AppReviewAppDelegate: NSObject, UIApplicationDelegate {
         didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
     ) {
         Task { @MainActor in
+            AppLaunchPushTokenHandler.shared.storePushToken(deviceToken)
+        }
+        Task { @MainActor in
             AppReviewPushTokenHandler.shared.storePushToken(deviceToken)
         }
     }
@@ -411,5 +414,15 @@ final class AppReviewAppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didFailToRegisterForRemoteNotificationsWithError error: Error
     ) {
+    }
+
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
+    ) -> Bool {
+        MainActor.assumeIsolated {
+            AppLaunchAttribution.shared.configure()
+        }
+        return true
     }
 }

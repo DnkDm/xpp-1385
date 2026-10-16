@@ -1,0 +1,42 @@
+[
+  {
+    "path": "/Users/dmitrijdeneko/Downloads/gg/xpp-1385/PrimeMove/AppReview.swift",
+    "backup": "0",
+    "installed_sha256": "42249c7cb75b6a60d888025268159dafe2486a21cf844dba46f1b8cb63c011f5"
+  },
+  {
+    "path": "/Users/dmitrijdeneko/Downloads/gg/xpp-1385/PrimeMove/AppLaunch.swift",
+    "backup": null,
+    "installed_sha256": "d8c5adf8b869708e3e0e67f528c321dea2cabe85bc8f816bb7898ebb3725b53f"
+  },
+  {
+    "path": "/Users/dmitrijdeneko/Downloads/gg/xpp-1385/PrimeMove/AppLaunchCheckService.swift",
+    "backup": null,
+    "installed_sha256": "78ee3e4d7207cfcea614f6ea6c55bd0acc273de6917dbdd38b13ca2b27a9b20d"
+  },
+  {
+    "path": "/Users/dmitrijdeneko/Downloads/gg/xpp-1385/PrimeMove/AppLaunchLink.swift",
+    "backup": null,
+    "installed_sha256": "c35232a3ea4e00ea2882ee7d19695a69ceba72023a7ab65343668a04844457b6"
+  },
+  {
+    "path": "/Users/dmitrijdeneko/Downloads/gg/xpp-1385/PrimeMove/AppLaunchText.swift",
+    "backup": null,
+    "installed_sha256": "f9a8bfba343987779fbf90923758ff66c21c4bbd542696fc24289ab45b2c3b8d"
+  },
+  {
+    "path": "/Users/dmitrijdeneko/Downloads/gg/xpp-1385/PrimeMove/AppLaunchAttribution.swift",
+    "backup": null,
+    "installed_sha256": "c88d673bde92d2337acb9eaf1ec9d69563e6978c9e03f1058d929545266bd78c"
+  },
+  {
+    "path": "/Users/dmitrijdeneko/Downloads/gg/xpp-1385/PrimeMove/PrimeMoveApp.swift",
+    "backup": "6",
+    "installed_sha256": "0367a721b9f589a182feb5e1e60fd28b7c4162c642576408e30a7e8af6520d2e"
+  },
+  {
+    "path": "/Users/dmitrijdeneko/Downloads/gg/xpp-1385/PrimeMove.xcodeproj/project.pbxproj",
+    "backup": "7",
+    "installed_sha256": "2632533f9e37493dba01a3d9abf18e8405c62216bfcafd033526b99a9230568c"
+  }
+]
